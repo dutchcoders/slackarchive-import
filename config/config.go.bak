@@ -1,0 +1,72 @@
+package config
+
+import (
+	"io/ioutil"
+
+	"github.com/codegangsta/cli"
+	"github.com/imdario/mergo"
+	"gopkg.in/yaml.v2"
+)
+
+var config Config = DefaultConfig
+
+func Load(c *cli.Context) error {
+	var err error
+	if err = config.Load(c.GlobalString("config")); err != nil {
+		return err
+	}
+
+	// initialize
+	return mergo.MergeWithOverwrite(&config, &Config{
+		DSN:  c.GlobalString("dsn"),
+		Port: c.String("port"),
+		Mandrill: MandrillConfig{
+			Key: c.String("mandrill-key"),
+		},
+	})
+}
+
+func Get() *Config {
+	return &config
+}
+
+type Config struct {
+	Port     string         `yaml:"port"`
+	DSN      string         `yaml:"dsn"`
+	Mandrill MandrillConfig `yaml:"mandrill"`
+	HSM      HSMConfig      `yaml:hsm"`
+}
+
+// TODO:
+// func (c *config) Validate() {
+// check if path exists
+// }
+
+type HSM struct {
+	Key string `yaml:"key"`
+}
+
+type MandrillConfig struct {
+	Key string `yaml:"key"`
+}
+
+var DefaultConfig Config = Config{
+	Port:     ":8080",
+	Mandrill: MandrillConfig{},
+	HSM:      HSMConfig{},
+}
+
+func (c *Config) Load(path string) error {
+	var data []byte
+	var err error
+	if data, err = ioutil.ReadFile(path); err != nil {
+		return err
+	}
+
+	tmp := Config{}
+	if err = yaml.Unmarshal([]byte(data), &tmp); err != nil {
+		return err
+	}
+
+	return mergo.MergeWithOverwrite(c, tmp)
+}
