@@ -1,4 +1,4 @@
-package main
+package importer
 
 import (
 	"context"
@@ -313,20 +313,4 @@ func (i *Importer) Import(token string, importPath string) (*TeamImporter, error
 	}
 
 	return ti, nil
-}
-
-func main() {
-	if len(os.Args) != 3 {
-		fmt.Println("Usage: import {token} {path}")
-		return
-	}
-
-	token := os.Args[1]
-	p := os.Args[2]
-
-	conf := &config.Config{}
-	conf.Load("config.yaml")
-
-	importer := New(conf)
-	importer.Import(token, p)
 }

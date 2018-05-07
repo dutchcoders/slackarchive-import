@@ -5,8 +5,8 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/codegangsta/cli"
 	"github.com/imdario/mergo"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 var config Config = DefaultConfig
