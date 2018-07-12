@@ -1,7 +1,7 @@
-dsn: "mongodb://1.2.3.4:27017/slackarchive"
+dsn: "mongodb://slackarchive:1234@mongodb:27017/slackarchive"
 
 elasticsearch:
-    host: http://1.2.3.4:9200
+    host: http://elasticsearch:9200/
 
 tokens:
     - xoxb-ABC-123
